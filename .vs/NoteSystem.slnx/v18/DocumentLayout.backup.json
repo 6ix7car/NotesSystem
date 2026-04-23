@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "X:\\3 \u043A\u0443\u0440\u0441 2 \u0441\u0435\u043C\u0435\u0441\u0442\u0440\\\u041A\u0443\u0440\u0441\u043E\u0432\u0430\u044F \u041C\u0438\u0445\u0430\u0439\u043B\u043E\u0432\\NoteSystem\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{B80943B0-423D-402B-B5DA-534CA59FB036}|NoteSystem.csproj|x:\\3 \u043A\u0443\u0440\u0441 2 \u0441\u0435\u043C\u0435\u0441\u0442\u0440\\\u043A\u0443\u0440\u0441\u043E\u0432\u0430\u044F \u043C\u0438\u0445\u0430\u0439\u043B\u043E\u0432\\notesystem\\noteservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B80943B0-423D-402B-B5DA-534CA59FB036}|NoteSystem.csproj|solutionrelative:noteservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{B80943B0-423D-402B-B5DA-534CA59FB036}|NoteSystem.csproj|x:\\3 \u043A\u0443\u0440\u0441 2 \u0441\u0435\u043C\u0435\u0441\u0442\u0440\\\u043A\u0443\u0440\u0441\u043E\u0432\u0430\u044F \u043C\u0438\u0445\u0430\u0439\u043B\u043E\u0432\\notesystem\\securitylogger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B80943B0-423D-402B-B5DA-534CA59FB036}|NoteSystem.csproj|solutionrelative:securitylogger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{B80943B0-423D-402B-B5DA-534CA59FB036}|NoteSystem.csproj|x:\\3 \u043A\u0443\u0440\u0441 2 \u0441\u0435\u043C\u0435\u0441\u0442\u0440\\\u043A\u0443\u0440\u0441\u043E\u0432\u0430\u044F \u043C\u0438\u0445\u0430\u0439\u043B\u043E\u0432\\notesystem\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -23,14 +23,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "NoteService.cs",
-              "DocumentMoniker": "X:\\3 \u043A\u0443\u0440\u0441 2 \u0441\u0435\u043C\u0435\u0441\u0442\u0440\\\u041A\u0443\u0440\u0441\u043E\u0432\u0430\u044F \u041C\u0438\u0445\u0430\u0439\u043B\u043E\u0432\\NoteSystem\\NoteService.cs",
-              "RelativeDocumentMoniker": "NoteService.cs",
-              "ToolTip": "X:\\3 \u043A\u0443\u0440\u0441 2 \u0441\u0435\u043C\u0435\u0441\u0442\u0440\\\u041A\u0443\u0440\u0441\u043E\u0432\u0430\u044F \u041C\u0438\u0445\u0430\u0439\u043B\u043E\u0432\\NoteSystem\\NoteService.cs",
-              "RelativeToolTip": "NoteService.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAABYAAAAJAAAAAAAAAA==",
+              "Title": "SecurityLogger.cs",
+              "DocumentMoniker": "X:\\3 \u043A\u0443\u0440\u0441 2 \u0441\u0435\u043C\u0435\u0441\u0442\u0440\\\u041A\u0443\u0440\u0441\u043E\u0432\u0430\u044F \u041C\u0438\u0445\u0430\u0439\u043B\u043E\u0432\\NoteSystem\\SecurityLogger.cs",
+              "RelativeDocumentMoniker": "SecurityLogger.cs",
+              "ToolTip": "X:\\3 \u043A\u0443\u0440\u0441 2 \u0441\u0435\u043C\u0435\u0441\u0442\u0440\\\u041A\u0443\u0440\u0441\u043E\u0432\u0430\u044F \u041C\u0438\u0445\u0430\u0439\u043B\u043E\u0432\\NoteSystem\\SecurityLogger.cs",
+              "RelativeToolTip": "SecurityLogger.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-23T11:47:24.729Z",
+              "WhenOpened": "2026-04-23T11:48:53.027Z",
               "EditorCaption": ""
             },
             {
