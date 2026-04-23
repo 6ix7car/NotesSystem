@@ -27,9 +27,9 @@ namespace Kurs
             string query = "SELECT id, role FROM users WHERE username=@u AND password_md5=@p";
             var parameters = new[]
             {
-                new NpgsqlParameter("u", username),
-                new NpgsqlParameter("p", hash)
-            };
+        new NpgsqlParameter("u", username),
+        new NpgsqlParameter("p", hash)
+    };
             DataTable result = DbHelper.ExecuteQuery(query, parameters);
             bool success = result.Rows.Count == 1;
 
@@ -41,12 +41,17 @@ namespace Kurs
                 string updateQuery = "UPDATE users SET last_login_at = @now WHERE id = @id";
                 var updateParams = new[]
                 {
-                    new NpgsqlParameter("now", DateTime.Now),
-                    new NpgsqlParameter("id", userId)
-                };
+            new NpgsqlParameter("now", DateTime.Now),
+            new NpgsqlParameter("id", userId)
+        };
                 DbHelper.ExecuteNonQuery(updateQuery, updateParams);
                 // сохраняем в глобальных переменных в Program
                 Program.SetCurrentUser(userId, username, role);
+                Console.WriteLine($"Добро пожаловать, {username}! Ваша роль: {role}");
+            }
+            else
+            {
+                Console.WriteLine("Ошибка входа: неверный логин или пароль.");
             }
 
             SecurityLogger.Log(success ? "LOGIN_SUCCESS" : "LOGIN_FAIL", username,
@@ -65,17 +70,19 @@ namespace Kurs
                 string query = "INSERT INTO users (username, password_md5, role, created_at) VALUES (@u, @p, @r, @now)";
                 var parameters = new[]
                 {
-                    new NpgsqlParameter("u", username),
-                    new NpgsqlParameter("p", hash),
-                    new NpgsqlParameter("r", role),
-                    new NpgsqlParameter("now", DateTime.Now)
-                };
+            new NpgsqlParameter("u", username),
+            new NpgsqlParameter("p", hash),
+            new NpgsqlParameter("r", role),
+            new NpgsqlParameter("now", DateTime.Now)
+        };
                 DbHelper.ExecuteNonQuery(query, parameters);
                 SecurityLogger.Log("REGISTER", username, "127.0.0.1", $"Новая регистрация с ролью {role}", "INFO");
+                Console.WriteLine($"Регистрация пользователя {username} с ролью {role} прошла успешно.");
                 return true;
             }
             catch
             {
+                Console.WriteLine($"Ошибка регистрации: пользователь {username} уже существует.");
                 return false;
             }
         }

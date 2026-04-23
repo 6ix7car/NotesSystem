@@ -268,43 +268,49 @@ namespace Kurs
                 Console.WriteLine($"Ошибка подключения: {ex.Message}");
             }
         }
-        public static void ShowHelp()
+        static void ShowHelp()
         {
-            Console.WriteLine(@"
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                     СИСТЕМА ЗАМЕТОК - КАРТА КОМАНД                           ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║   АУТЕНТИФИКАЦИЯ:                                                            ║
-║    --login <username> <password>    - Вход в систему                         ║
-║    --register <user> <pass> [role]  - Регистрация (роль: admin/user/readonly)║
-║    --myrole                         - Показать мою роль                      ║
-║    --logout                         - Выход из системы                       ║
-║                                                                              ║
-║   РАБОТА С ЗАМЕТКАМИ (доступно для admin и user, readonly только чтение):    ║
-║    --addNewNote ""<текст>""           - Создать новую заметку                ║
-║    --listNotes                       - Показать все заметки                  ║
-║    --getNote <id>                    - Показать заметку по ID                ║
-║    --editNote <id> ""<новый текст>""  - Редактировать заметку                ║
-║    --deleteNote <id>                 - Удалить заметку                       ║
-║    --restoreNote <id>                - Восстановить удалённую заметку        ║
-║                                                                              ║
-║   МОНИТОРИНГ СИСТЕМЫ (только для admin):                                     ║
-║    --systemStats local               - Статистика текущего сервера           ║
-║    --systemStats remote <host> <user> <pass> - Статистика удалённого сервера ║
-║                                                                              ║
-║   ЛОГИ БЕЗОПАСНОСТИ (только для admin):                                      ║
-║    --securityLogs list               - Показать последние логи               ║
-║    --securityLogs export <json|csv>  - Экспортировать логи в файл            ║
-║                                                                              ║
-║   ОБНОВЛЕНИЯ:                                                                ║
-║    --checkUpdate                     - Проверить наличие обновлений          ║
-║    --update                          - Выполнить обновление                  ║
-║                                                                              ║
-║   СПРАВКА:                                                                   ║
-║    --help                            - Показать эту справку                  ║
-║    exit                              - Выход из программы                    ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+            bool isAuth = currentUserId != -1;
+            if (!isAuth)
+            {
+                Console.WriteLine(@"
+Доступные команды (не авторизован):
+  --login <username> <password>   - Вход в систему
+  --register <user> <pass> [role] - Регистрация (роль: admin/user/readonly)
+  --checkUpdate                   - Проверить обновления
+  --update                        - Выполнить обновление
+  --help                          - Эта справка
+  exit                            - Выход
 ");
+                return;
+            }
+
+            // Авторизован
+            Console.WriteLine("=== ДОСТУПНЫЕ КОМАНДЫ ===");
+            Console.WriteLine("  --logout                 - Выйти из системы");
+            Console.WriteLine("  --myrole                 - Показать мою роль");
+            Console.WriteLine("  --listNotes              - Список заметок");
+            Console.WriteLine("  --getNote <id>           - Показать заметку по ID");
+
+            if (currentUserRole != "readonly")
+            {
+                Console.WriteLine("  --addNewNote \"текст\"    - Создать заметку");
+                Console.WriteLine("  --editNote <id> \"текст\" - Редактировать заметку");
+                Console.WriteLine("  --deleteNote <id>       - Удалить заметку");
+                Console.WriteLine("  --restoreNote <id>      - Восстановить заметку");
+            }
+
+            if (currentUserRole == "admin")
+            {
+                Console.WriteLine("  --systemStats local     - Статистика системы (CPU/RAM/HDD)");
+                Console.WriteLine("  --systemStats remote host user pass - Удалённая статистика");
+                Console.WriteLine("  --securityLogs list     - Логи безопасности");
+            }
+
+            Console.WriteLine("  --checkUpdate           - Проверить обновления");
+            Console.WriteLine("  --update                - Выполнить обновление");
+            Console.WriteLine("  --help                  - Справка");
+            Console.WriteLine("  exit                    - Выход");
         }
     }
 }
