@@ -18,8 +18,15 @@ namespace Kurs
 
         static void Main(string[] args)
         {
-            Console.WriteLine("=== Консольная система заметок ===");
-            Console.WriteLine("Введите --help для списка команд.");
+            Console.Title = "Notes System";
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(@"
+╔══════════════════════════════════════════════════════════════╗
+║                 СИСТЕМА ЗАМЕТОК v1.0                         ║
+║                 Введите --help для списка команд             ║
+╚══════════════════════════════════════════════════════════════╝
+");
+            Console.ResetColor();
             TestDatabaseConnection();
 
             // Проверка обновлений при старте
@@ -247,35 +254,7 @@ namespace Kurs
             }
         }
 
-        static void ShowHelp()
-        {
-            Console.WriteLine(@"
-=== Помощь ===
-
---login <username> <password>                  Вход в систему
---register <username> <password> [role]        Регистрация (role: admin, user, readonly)
---myrole                                        Показать мою роль
---logout                                        Выход
-
---addNewNote ""<текст>""                         Создать заметку
---listNotes                                     Список заметок
---getNote <id>                                  Показать заметку
---editNote <id> ""<новый текст>""                Редактировать
---deleteNote <id>                               Удалить (мягкое)
---restoreNote <id>                              Восстановить
-
---systemStats local                             Статистика текущего сервера
---systemStats remote <host> <user> <pass>       Удалённая статистика (заглушка)
-
---securityLogs list                             Показать логи безопасности (только admin)
-
---checkUpdate                                   Проверить обновления
---update                                        Установить обновление
-
---help                                          Эта справка
-exit                                            Выход из программы
-");
-        }
+       
 
         static void TestDatabaseConnection()
         {
@@ -288,6 +267,44 @@ exit                                            Выход из программ
             {
                 Console.WriteLine($"Ошибка подключения: {ex.Message}");
             }
+        }
+        public static void ShowHelp()
+        {
+            Console.WriteLine(@"
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                     СИСТЕМА ЗАМЕТОК - КАРТА КОМАНД                           ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║   АУТЕНТИФИКАЦИЯ:                                                            ║
+║    --login <username> <password>    - Вход в систему                         ║
+║    --register <user> <pass> [role]  - Регистрация (роль: admin/user/readonly)║
+║    --myrole                         - Показать мою роль                      ║
+║    --logout                         - Выход из системы                       ║
+║                                                                              ║
+║   РАБОТА С ЗАМЕТКАМИ (доступно для admin и user, readonly только чтение):    ║
+║    --addNewNote ""<текст>""           - Создать новую заметку                ║
+║    --listNotes                       - Показать все заметки                  ║
+║    --getNote <id>                    - Показать заметку по ID                ║
+║    --editNote <id> ""<новый текст>""  - Редактировать заметку                ║
+║    --deleteNote <id>                 - Удалить заметку                       ║
+║    --restoreNote <id>                - Восстановить удалённую заметку        ║
+║                                                                              ║
+║   МОНИТОРИНГ СИСТЕМЫ (только для admin):                                     ║
+║    --systemStats local               - Статистика текущего сервера           ║
+║    --systemStats remote <host> <user> <pass> - Статистика удалённого сервера ║
+║                                                                              ║
+║   ЛОГИ БЕЗОПАСНОСТИ (только для admin):                                      ║
+║    --securityLogs list               - Показать последние логи               ║
+║    --securityLogs export <json|csv>  - Экспортировать логи в файл            ║
+║                                                                              ║
+║   ОБНОВЛЕНИЯ:                                                                ║
+║    --checkUpdate                     - Проверить наличие обновлений          ║
+║    --update                          - Выполнить обновление                  ║
+║                                                                              ║
+║   СПРАВКА:                                                                   ║
+║    --help                            - Показать эту справку                  ║
+║    exit                              - Выход из программы                    ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+");
         }
     }
 }
