@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="AuthService.cs" />
     <Compile Include="DbHelper.cs" />
+    <Compile Include="NoteService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
