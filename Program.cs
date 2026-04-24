@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NoteSystem;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,6 +30,7 @@ namespace Kurs
 ");
             Console.ResetColor();
             TestDatabaseConnection();
+            DbHelper.InitializeDatabase();
 
             // Проверка обновлений при старте
             // if (UpdateService.CheckForUpdates()) UpdateService.ApplyUpdate();
@@ -136,7 +138,7 @@ namespace Kurs
             // Если не авторизован, остальные команды не доступны
             if (currentUserId == -1)
             {
-                Console.WriteLine("Необходимо войти. Используйте --login <user> <pass>");
+                ColorConsole.WriteLineWarning("Необходимо войти. Используйте --login <user> <pass>");
                 return;
             }
 
@@ -147,7 +149,7 @@ namespace Kurs
                     currentUserId = -1;
                     currentUsername = "";
                     currentUserRole = "";
-                    Console.WriteLine("Вы вышли из системы.");
+                    ColorConsole.WriteLineSuccess("Вы вышли из системы.");
                     break;
 
                 case "--myrole":
@@ -157,7 +159,7 @@ namespace Kurs
                 case "--addnewnote":
                     if (currentUserRole == "readonly")
                     {
-                        Console.WriteLine("Недостаточно прав. Роль readonly не может создавать заметки.");
+                        ColorConsole.WriteLineWarning("Недостаточно прав. Роль readonly не может создавать заметки.");
                         break;
                     }
                     if (parts.Length < 2)
@@ -167,7 +169,7 @@ namespace Kurs
                     }
                     string noteText = string.Join(" ", parts.Skip(1)).Trim('"');
                     NoteService.AddNote(currentUserId, noteText);
-                    Console.WriteLine("Заметка добавлена.");
+                    ColorConsole.WriteLineSuccess("Заметка добавлена.");
                     break;
 
                 case "--listnotes":
@@ -182,7 +184,7 @@ namespace Kurs
                     }
                     string content = NoteService.GetNoteContent(getNoteId, currentUserId);
                     if (content == null)
-                        Console.WriteLine($"Заметка с id {getNoteId} не найдена.");
+                        ColorConsole.WriteLineWarning($"Заметка с id {getNoteId} не найдена.");
                     else
                         Console.WriteLine($"Заметка {getNoteId}: {content}");
                     break;
@@ -190,7 +192,7 @@ namespace Kurs
                 case "--editnote":
                     if (currentUserRole == "readonly")
                     {
-                        Console.WriteLine("Недостаточно прав. Роль readonly не может редактировать заметки.");
+                        ColorConsole.WriteLineWarning("Недостаточно прав. Роль readonly не может редактировать заметки.");
                         break;
                     }
                     if (parts.Length < 3 || !int.TryParse(parts[1], out int editId))
@@ -200,15 +202,15 @@ namespace Kurs
                     }
                     string newText = string.Join(" ", parts.Skip(2)).Trim('"');
                     if (NoteService.UpdateNote(editId, currentUserId, newText))
-                        Console.WriteLine("Заметка обновлена.");
+                        ColorConsole.WriteLineSuccess("Заметка обновлена.");
                     else
-                        Console.WriteLine($"Не удалось обновить заметку {editId}.");
+                        ColorConsole.WriteLineError($"Не удалось обновить заметку {editId}.");
                     break;
 
                 case "--deletenote":
                     if (currentUserRole == "readonly")
                     {
-                        Console.WriteLine("Недостаточно прав. Роль readonly не может удалять заметки.");
+                        ColorConsole.WriteLineWarning("Недостаточно прав. Роль readonly не может удалять заметки.");
                         break;
                     }
                     if (parts.Length < 2 || !int.TryParse(parts[1], out int delId))
@@ -216,16 +218,23 @@ namespace Kurs
                         Console.WriteLine("Использование: --deleteNote <id>");
                         break;
                     }
-                    if (NoteService.DeleteNote(delId, currentUserId))
-                        Console.WriteLine("Заметка удалена.");
+                    ColorConsole.WriteLineWarning($"Вы уверены, что хотите удалить заметку {delId}? (y/n): ");
+                    string confirm = Console.ReadLine();
+                    if (confirm != null && confirm.ToLower() == "y")
+                    {
+                        if (NoteService.DeleteNote(delId, currentUserId))
+                            ColorConsole.WriteLineSuccess("Заметка удалена.");
+                        else
+                            ColorConsole.WriteLineWarning($"Не удалось удалить заметку {delId}.");
+                    }
                     else
-                        Console.WriteLine($"Не удалось удалить заметку {delId}.");
+                        ColorConsole.WriteLineSuccess("Удаление отменено.");
                     break;
 
                 case "--restorenote":
                     if (currentUserRole == "readonly")
                     {
-                        Console.WriteLine("Недостаточно прав. Роль readonly не может восстанавливать заметки.");
+                        ColorConsole.WriteLineWarning("Недостаточно прав. Роль readonly не может восстанавливать заметки.");
                         break;
                     }
                     if (parts.Length < 2 || !int.TryParse(parts[1], out int restId))
@@ -234,15 +243,15 @@ namespace Kurs
                         break;
                     }
                     if (NoteService.RestoreNote(restId, currentUserId))
-                        Console.WriteLine("Заметка восстановлена.");
+                        ColorConsole.WriteLineSuccess("Заметка восстановлена.");
                     else
-                        Console.WriteLine($"Не удалось восстановить заметку {restId}.");
+                        ColorConsole.WriteLineWarning($"Не удалось восстановить заметку {restId}.");
                     break;
 
                 case "--systemstats":
                     if (currentUserRole != "admin")
                     {
-                        Console.WriteLine("Доступ запрещён. Только для администратора.");
+                        ColorConsole.WriteLineError("Доступ запрещён. Только для администратора.");
                         break;
                     }
                     if (parts.Length < 2)
@@ -254,20 +263,20 @@ namespace Kurs
                     {
                         Stats.ShowLocalStats();
                         Stats.SaveLocalStatsToDb();
-                        Console.WriteLine("Статистика сохранена в БД.");
+                        ColorConsole.WriteLineSuccess("Статистика сохранена в БД.");
                     }
                     else if (parts[1].ToLower() == "remote" && parts.Length >= 5)
                     {
                         Stats.ShowRemoteStats(parts[2], parts[3], parts[4]);
                     }
                     else
-                        Console.WriteLine("Неверный формат. Используйте --help.");
+                        ColorConsole.WriteLineError("Неверный формат. Используйте --help.");
                     break;
 
                 case "--securitylogs":
                     if (currentUserRole != "admin")
                     {
-                        Console.WriteLine("Доступ запрещён. Только для администратора.");
+                        ColorConsole.WriteLineError("Доступ запрещён. Только для администратора.");
                         break;
                     }
                     if (parts.Length >= 2 && parts[1].ToLower() == "list")
@@ -277,7 +286,7 @@ namespace Kurs
                     break;
 
                 default:
-                    Console.WriteLine("Неизвестная команда. Введите --help.");
+                    ColorConsole.WriteLineWarning("Неизвестная команда. Введите --help.");
                     break;
             }
         }
@@ -287,7 +296,7 @@ namespace Kurs
             var dt = DbHelper.ExecuteQuery("SELECT * FROM security_logs ORDER BY created_at DESC LIMIT 20");
             if (dt.Rows.Count == 0)
             {
-                Console.WriteLine("Логи безопасности пусты.");
+                ColorConsole.WriteLineWarning("Логи безопасности пусты.");
                 return;
             }
             Console.WriteLine("\nПоследние события безопасности:");
@@ -304,11 +313,11 @@ namespace Kurs
             try
             {
                 var dt = DbHelper.ExecuteQuery("SELECT NOW() as current_time, version() as pg_version");
-                Console.WriteLine("Подключение к БД успешно!");
+                ColorConsole.WriteLineSuccess("Подключение к БД успешно!");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Ошибка подключения: {ex.Message}");
+                ColorConsole.WriteLineWarning($"Ошибка подключения: {ex.Message}");
             }
         }
         static void ShowHelp()
