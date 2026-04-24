@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Kurs
@@ -52,11 +53,53 @@ namespace Kurs
                 }
             }
         }
+        private static readonly Dictionary<string, string> ShortToLongCmd = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+        // --- заметки ---
+        { "-a", "--addnewnote" },
+        { "-add", "--addnewnote" },
+        { "-l", "--listnotes" },
+        { "-list", "--listnotes" },
+        { "-g", "--getnote" },
+        { "-e", "--editnote" },
+        { "-edit", "--editnote" },
+        { "-d", "--deletenote" },
+        { "-del", "--deletenote" },
+        { "-rm", "--deletenote" },
+        { "-r", "--restorenote" },
+        { "-restore", "--restorenote" },
 
+        // --- системная статистика и логи ---
+        { "-stats", "--systemstats" },
+        { "-logs", "--securitylogs" },
+
+        // --- аутентификация ---
+        { "-login", "--login" },
+        { "-reg", "--register" },
+        { "-role", "--myrole" },
+        { "-out", "--logout" },
+
+        // --- обновления ---
+        { "-up", "--update" },
+        { "-check", "--checkupdate" },
+
+        // --- справка и выход ---
+        { "-h", "--help" },
+        { "?", "--help" },
+        { "/?", "--help" }
+        };
         static void ProcessCommand(string input)
         {
             string[] parts = input.Split(' ');
-            string cmd = parts[0].ToLower();
+            string rawCmd = parts[0].ToLower();
+
+            // маппинг коротких команд -> длинные
+            if (ShortToLongCmd.TryGetValue(rawCmd, out string mappedCmd))
+                rawCmd = mappedCmd;
+
+            string cmd = rawCmd;   // теперь cmd – это уже нормализованная команда
+
+
 
             // Команды, доступные даже без авторизации
             switch (cmd)
@@ -254,7 +297,7 @@ namespace Kurs
             }
         }
 
-       
+
 
         static void TestDatabaseConnection()
         {
@@ -274,43 +317,43 @@ namespace Kurs
             if (!isAuth)
             {
                 Console.WriteLine(@"
-Доступные команды (не авторизован):
-  --login <username> <password>   - Вход в систему
-  --register <user> <pass> [role] - Регистрация (роль: admin/user/readonly)
-  --checkUpdate                   - Проверить обновления
-  --update                        - Выполнить обновление
-  --help                          - Эта справка
-  exit                            - Выход
-");
+                Доступные команды (не авторизован):
+                  --login (-login) <username> <password>     - Вход в систему
+                  --register (-reg) <user> <pass> [role]     - Регистрация (роль: admin/user/readonly)
+                  --checkUpdate (-check)                     - Проверить обновления
+                  --update (-up)                             - Выполнить обновление
+                  --help (-h, ?, /?)                         - Эта справка
+                  exit                                       - Выход
+                ");
                 return;
             }
 
             // Авторизован
             Console.WriteLine("=== ДОСТУПНЫЕ КОМАНДЫ ===");
-            Console.WriteLine("  --logout                 - Выйти из системы");
-            Console.WriteLine("  --myrole                 - Показать мою роль");
-            Console.WriteLine("  --listNotes              - Список заметок");
-            Console.WriteLine("  --getNote <id>           - Показать заметку по ID");
+            Console.WriteLine("  --logout (-out)                    - Выйти из системы");
+            Console.WriteLine("  --myrole (-role)                   - Показать мою роль");
+            Console.WriteLine("  --listNotes (-l, -list)            - Список заметок");
+            Console.WriteLine("  --getNote (-g) <id>                - Показать заметку по ID");
 
             if (currentUserRole != "readonly")
             {
-                Console.WriteLine("  --addNewNote \"текст\"    - Создать заметку");
-                Console.WriteLine("  --editNote <id> \"текст\" - Редактировать заметку");
-                Console.WriteLine("  --deleteNote <id>       - Удалить заметку");
-                Console.WriteLine("  --restoreNote <id>      - Восстановить заметку");
+                Console.WriteLine("  --addNewNote (-a, -add) \"текст\"    - Создать заметку");
+                Console.WriteLine("  --editNote (-e, -edit) <id> \"текст\" - Редактировать заметку");
+                Console.WriteLine("  --deleteNote (-d, -del, -rm) <id>     - Удалить заметку");
+                Console.WriteLine("  --restoreNote (-r, -restore) <id>     - Восстановить заметку");
             }
 
             if (currentUserRole == "admin")
             {
-                Console.WriteLine("  --systemStats local     - Статистика системы (CPU/RAM/HDD)");
+                Console.WriteLine("  --systemStats (-stats) local       - Статистика системы (CPU/RAM/HDD)");
                 Console.WriteLine("  --systemStats remote host user pass - Удалённая статистика");
-                Console.WriteLine("  --securityLogs list     - Логи безопасности");
+                Console.WriteLine("  --securityLogs (-logs) list        - Логи безопасности");
             }
 
-            Console.WriteLine("  --checkUpdate           - Проверить обновления");
-            Console.WriteLine("  --update                - Выполнить обновление");
-            Console.WriteLine("  --help                  - Справка");
-            Console.WriteLine("  exit                    - Выход");
+            Console.WriteLine("  --checkUpdate (-check)             - Проверить обновления");
+            Console.WriteLine("  --update (-up)                     - Выполнить обновление");
+            Console.WriteLine("  --help (-h, ?, /?)                 - Справка");
+            Console.WriteLine("  exit                               - Выход");
         }
     }
 }
