@@ -5,7 +5,7 @@ namespace Kurs
 {
     public static class DbHelper
     {
-        private static string connectionString = "Server=localhost;Port=5432;User ID=postgres;Password=3455;Database=NoteSystem;";
+        private static string connectionString = "Server=localhost;Port=5432;User ID=postgres;Password=3455;Database=NoteSystem5;";
 
         public static void InitializeDatabase()
         {

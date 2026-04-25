@@ -32,8 +32,6 @@ namespace Kurs
             TestDatabaseConnection();
             DbHelper.InitializeDatabase();
 
-            // Проверка обновлений при старте
-            // if (UpdateService.CheckForUpdates()) UpdateService.ApplyUpdate();
 
             while (true)
             {
@@ -307,18 +305,57 @@ namespace Kurs
         }
 
 
-
+        static void AnimatedWait(int seconds)
+        {
+            for (int i = seconds; i > 0; i--)
+            {
+                Console.Write($"\rПовторная попытка через {i} секунд...   ");
+                System.Threading.Thread.Sleep(1000);
+            }
+            Console.Write("\r" + new string(' ', 40) + "\r"); // Очищаем строку
+        }
         static void TestDatabaseConnection()
         {
-            try
+            int attempts = 0;
+            const int maxAttempts = 10;
+            const int retryDelaySeconds = 5;
+
+            while (attempts < maxAttempts)
             {
-                var dt = DbHelper.ExecuteQuery("SELECT NOW() as current_time, version() as pg_version");
-                ColorConsole.WriteLineSuccess("Подключение к БД успешно!");
+                try
+                {
+                    var dt = DbHelper.ExecuteQuery("SELECT NOW() as current_time, version() as pg_version");
+                    if (dt.Rows.Count > 0)
+                    {
+                        if (attempts > 0)
+                        {
+                            Console.WriteLine(); // Переход на новую строку после успешного подключения
+                        }
+                        ColorConsole.WriteLineSuccess($"Подключение к БД успешно! (попытка {attempts + 1})");
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    attempts++;
+
+                    if (attempts == 1)
+                    {
+                        ColorConsole.WriteLineError($"Ошибка подключения: {ex.Message}");
+                    }
+
+                    if (attempts < maxAttempts)
+                    {
+                        // Анимированный обратный отсчёт
+                        AnimatedWait(retryDelaySeconds);
+                        Console.Write($"Попытка {attempts + 1} подключения...");
+                    }
+                }
             }
-            catch (Exception ex)
-            {
-                ColorConsole.WriteLineWarning($"Ошибка подключения: {ex.Message}");
-            }
+
+            Console.WriteLine(); // Переход на новую строку
+            ColorConsole.WriteLineError("Не удалось подключиться к базе данных после нескольких попыток.");
+            ColorConsole.WriteLineWarning("Программа будет работать в ограниченном режиме (некоторые функции могут быть недоступны).");
         }
         static void ShowHelp()
         {
